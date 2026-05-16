@@ -9,6 +9,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Crea variables reusables
+    env:
+      DOCKER_USER: ${{ secrets.DOCKER_USER }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      IMAGE_NAME: "oayala775/docker-graphql"
     steps:
       - name: Use checkout v4
         uses: actions/checkout@v4
@@ -17,11 +22,6 @@ jobs:
 
       # Paso para autenticarse en dockerhub
       - name: Authenticate on dockerhub
-        # Crea variables de entorno reusables
-        env:
-          DOCKER_USER: ${{ secrets.DOCKER_USER }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          IMAGE_NAME: oayala775/docker-graphql
         run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
 
       # Construir la imagen
