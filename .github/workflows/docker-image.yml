@@ -36,11 +36,15 @@ jobs:
 
       # Construir la imagen
       - name: Build the Docker image
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
         run: |
           docker build . --file Dockerfile --tag $IMAGE_NAME:$VERSION
           docker build . --file Dockerfile --tag $IMAGE_NAME
 
       - name: Push docker image to DockerHub
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
         run: docker push $IMAGE_NAME:$VERSION
 
       - name: Push docker image to DockerHub as latest
