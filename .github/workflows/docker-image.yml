@@ -20,18 +20,28 @@ jobs:
         with:
           fetch_depth: 0 # Usa el último commit
 
+      - name: Import and configure versioning
+        uses: paulhatch/semantic-version@v5.4.0
+        with:
+          major_pattern: 'major:'
+          minor_pattern: 'feat:'
+          version_format: '${major}.${minor}.${patch}-prerelease${increment}'
+        id: version
+
       # Paso para autenticarse en dockerhub
       - name: Authenticate on dockerhub
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
         run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
 
       # Construir la imagen
       - name: Build the Docker image
         run: |
-          docker build . --file Dockerfile --tag $IMAGE_NAME:0.0.1
+          docker build . --file Dockerfile --tag $IMAGE_NAME:$VERSION
           docker build . --file Dockerfile --tag $IMAGE_NAME
 
       - name: Push docker image to DockerHub
-        run: docker push $IMAGE_NAME:0.0.1
+        run: docker push $IMAGE_NAME:$VERSION
 
       - name: Push docker image to DockerHub as latest
         run: docker push $IMAGE_NAME
